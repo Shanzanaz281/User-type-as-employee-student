@@ -1,0 +1,356 @@
+ 
+CREATE SCHEMA `project_final` ;
+------------------------------------------------------------------
+
+ CREATE TABLE `project_final`.`login_details` (
+  `usid` VARCHAR(30) NOT NULL,
+  `upwd` VARCHAR(30) NOT NULL,
+  UNIQUE INDEX `usid_UNIQUE` (`usid` ASC),
+  UNIQUE INDEX `upwd_UNIQUE` (`upwd` ASC));
+Table created.
+
+------------------------------------------------------------------
+
+ CREATE TABLE `project_final`.`university_details` (
+  `Univ_no` VARCHAR(10) NOT NULL,
+  `Univ_Name` VARCHAR(70) NOT NULL,
+  `Univ_Address` VARCHAR(50) NOT NULL,
+  `Pincode` INT(6) NOT NULL,
+  `City` VARCHAR(15) NOT NULL,
+  `State` VARCHAR(15) NOT NULL,
+  `Telno` VARCHAR(15) NOT NULL,
+  `Email` VARCHAR(45) NOT NULL,
+  `Website` VARCHAR(20) NOT NULL,
+  PRIMARY KEY (`Univ_no`),
+  UNIQUE INDEX `Univ_no_UNIQUE` (`Univ_no` ASC),
+  UNIQUE INDEX `Univ_Name_UNIQUE` (`Univ_Name` ASC),
+  UNIQUE INDEX `Email_UNIQUE` (`Email` ASC),
+  UNIQUE INDEX `Website_UNIQUE` (`Website` ASC));
+Table created.
+
+------------------------------------------------------------------
+
+ CREATE TABLE `project_final`.`course_details` (
+  `Course_Code` VARCHAR(15) NOT NULL,
+  `Univ_no` VARCHAR(10) NOT NULL,
+  `Course_Name` VARCHAR(30) NOT NULL,
+  `Course_Mode` VARCHAR(10) NOT NULL,
+  `Total_Year` INT NOT NULL,
+  PRIMARY KEY (`Course_Code`),
+  UNIQUE INDEX `Course_Code_UNIQUE` (`Course_Code` ASC),
+  INDEX `Course_detailsfk1_idx` (`Univ_no` ASC),
+  CONSTRAINT `Course_detailsfk1`
+  FOREIGN KEY (`Univ_no`)
+  REFERENCES `project_final`.`university_details` (`Univ_no`)
+  ON DELETE CASCADE,
+  ON UPDATE CASCADE);
+Table created.
+
+------------------------------------------------------------------
+
+CREATE TABLE `project_final`.`batch_details` (
+  `Batch_Code` VARCHAR(10) NOT NULL,
+  `Course_Code` VARCHAR(15) NOT NULL,
+  `Univ_no` VARCHAR(10) NOT NULL,
+  `Batch_Name` VARCHAR(30) NOT NULL,
+  `Batch_Plan` VARCHAR(10) NOT NULL,
+  PRIMARY KEY (`Batch_Code`),
+  UNIQUE INDEX `Batch_Code_UNIQUE` (`Batch_Code` ASC),
+  UNIQUE INDEX `Batch_Name_UNIQUE` (`Batch_Name` ASC),
+  INDEX `Batch_detailsfk1_idx` (`Course_Code` ASC),
+  INDEX `Batch_detailsfk2_idx` (`Univ_no` ASC),
+  CONSTRAINT `Batch_detailsfk1`
+    FOREIGN KEY (`Course_Code`)
+    REFERENCES `project_final`.`course_details` (`Course_Code`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `Batch_detailsfk2`
+    FOREIGN KEY (`Univ_no`)
+    REFERENCES `project_final`.`university_details` (`Univ_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+Table created.
+
+------------------------------------------------------------------
+
+CREATE TABLE `project_final`.`paper_details` (
+  `Course_Code` VARCHAR(15) NOT NULL,
+  `Univ_no` VARCHAR(10) NOT NULL,
+  `Sem_no` INT NOT NULL,
+  `Year_no` INT NOT NULL,
+  `Paper_Code` INT NOT NULL,
+  `Paper_Name` VARCHAR(45) NOT NULL,
+  `Paper_Type` VARCHAR(10) NOT NULL,
+  `PaperTh_Marks` INT(2) NOT NULL,
+  `PaperPrac_Marks` INT(2) NOT NULL,
+  `Paper_Weightage` INT(3) NOT NULL,
+  `Paper_TotalClass` INT(3) NOT NULL,
+  PRIMARY KEY (`Paper_Code`),
+  UNIQUE INDEX `Paper_Code_UNIQUE` (`Paper_Code` ASC),
+  UNIQUE INDEX `Paper_Name_UNIQUE` (`Paper_Name` ASC),
+  INDEX `Paper_detailsfk1_idx` (`Course_Code` ASC),
+  INDEX `Paper_detailsfk2_idx` (`Univ_no` ASC),
+  CONSTRAINT `Paper_detailsfk1`
+    FOREIGN KEY (`Course_Code`)
+    REFERENCES `project_final`.`course_details` (`Course_Code`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `Paper_detailsfk2`
+    FOREIGN KEY (`Univ_no`)
+    REFERENCES `project_final`.`university_details` (`Univ_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+Table created.
+
+------------------------------------------------------------------
+
+CREATE TABLE `project_final`.`student_details` (
+  `Sid` VARCHAR(5) NOT NULL,
+  `Univ_no` VARCHAR(10) NOT NULL,
+  `Course_Code` VARCHAR(15) NOT NULL,
+  `Batch_Code` VARCHAR(10) NOT NULL,
+  `roll` INT(3) NOT NULL,
+  `Student_Name` VARCHAR(30) NOT NULL,
+  `Guardian_Name` VARCHAR(30) NOT NULL,
+  `Relation` VARCHAR(10) NOT NULL,
+  `Guardian_Occup` VARCHAR(30) NOT NULL,
+  `Mother_Name` VARCHAR(30) NOT NULL,
+  `Mother_Occup` VARCHAR(30) NOT NULL,
+  `Dob` DATE NOT NULL,
+  `Gender` VARCHAR(10) NOT NULL,
+  `M_Status` VARCHAR(10) NOT NULL,
+  `Email` VARCHAR(45) NOT NULL,
+  `Caddress` VARCHAR(70) NOT NULL,
+  `Cpin` INT(6) NOT NULL,
+  `Ccity` VARCHAR(15) NOT NULL,
+  `Cstate` VARCHAR(15) NOT NULL,
+  `Ctelno` VARCHAR(15) NOT NULL,
+  `Cmobno` BIGINT NOT NULL,
+  `Paddress` VARCHAR(70) NOT NULL,
+  `Ppin` INT(6) NOT NULL,
+  `Pcity` VARCHAR(15) NOT NULL,
+  `Pstate` VARCHAR(15) NOT NULL,
+  `Ptelno` VARCHAR(15) NOT NULL,
+  `Photo` VARCHAR(50) NOT NULL,
+  `img_val` LONGBLOB NOT NULL,
+  `Sign` VARCHAR(50) NOT NULL,
+  `img_val1` LONGBLOB NOT NULL,
+  PRIMARY KEY (`Sid`),
+  UNIQUE INDEX `Sid_UNIQUE` (`Sid` ASC),
+  UNIQUE INDEX `Email_UNIQUE` (`Email` ASC),
+  INDEX `Student_detailsfk1_idx` (`Univ_no` ASC),
+  INDEX `Student_detailsfk2_idx` (`Course_Code` ASC),
+  INDEX `Student_detailsfk3_idx` (`Batch_Code` ASC),
+  CONSTRAINT `Student_detailsfk1`
+    FOREIGN KEY (`Univ_no`)
+    REFERENCES `project_final`.`university_details` (`Univ_no`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `Student_detailsfk2`
+    FOREIGN KEY (`Course_Code`)
+    REFERENCES `project_final`.`course_details` (`Course_Code`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `Student_detailsfk3`
+    FOREIGN KEY (`Batch_Code`)
+    REFERENCES `project_final`.`batch_details` (`Batch_Code`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+Table created.
+   
+------------------------------------------------------------------
+
+CREATE TABLE `project_final`.`teacher_details` (
+  `Teacher_ID` VARCHAR(15) NOT NULL,
+  `Teacher_Name` VARCHAR(30) NOT NULL,
+  `T_Gender` VARCHAR(10) NOT NULL,
+  `TM_Status` VARCHAR(10) NOT NULL,
+  `Teacher_Mobile` BIGINT NOT NULL,
+  `Teacher_Email` VARCHAR(45) NOT NULL,
+  `Teacher_Time` VARCHAR(15) NOT NULL,
+  `Teacher_Photo` VARCHAR(50) NOT NULL,
+  `img_value` LONGBLOB NOT NULL,
+  PRIMARY KEY (`Teacher_ID`),
+  UNIQUE INDEX `Teacher_ID_UNIQUE` (`Teacher_ID` ASC),
+  UNIQUE INDEX `Teacher_Email_UNIQUE` (`Teacher_Email` ASC));
+Table created.
+
+------------------------------------------------------------------
+
+CREATE TABLE `project_final`.`paper_assign_details` (
+  `Teacher_ID` VARCHAR(15) NOT NULL,
+  `Batch_Code` VARCHAR(10) NOT NULL,
+  `Paper_Code` INT NOT NULL,
+  `Paper_Timing` VARCHAR(15) NOT NULL,
+  `Class_Alloted` INT(3) NOT NULL,
+  `Class_Conducted` INT(3) NOT NULL,
+  PRIMARY KEY (`Teacher_ID`, `Batch_Code`, `Paper_Code`),
+  INDEX `assign_fk2_idx` (`Batch_Code` ASC),
+  INDEX `assign_fk3_idx` (`Paper_Code` ASC),
+  CONSTRAINT `assign_fk1`
+    FOREIGN KEY (`Teacher_ID`)
+    REFERENCES `project_final`.`teacher_details` (`Teacher_ID`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `assign_fk2`
+    FOREIGN KEY (`Batch_Code`)
+    REFERENCES `project_final`.`batch_details` (`Batch_Code`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `assign_fk3`
+    FOREIGN KEY (`Paper_Code`)
+    REFERENCES `project_final`.`paper_details` (`Paper_Code`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+Table created.
+
+------------------------------------------------------------------
+
+CREATE TABLE `project_final`.`attendance_details` (
+  `Sid` VARCHAR(5) NOT NULL,
+  `Course_Name` VARCHAR(30) NOT NULL,
+  `Batch_Name` VARCHAR(30) NOT NULL,
+  `Sem_no` INT NOT NULL,
+  `Paper_Name` VARCHAR(45) NOT NULL,
+  `Teacher_Name` VARCHAR(30) NOT NULL,
+  `Class_Conducted` INT(3) NOT NULL,
+  `M_Class` INT(2) NOT NULL,
+  `A_Class` INT(3) NOT NULL,
+  `Ab_Class` INT(3) NOT NULL,
+  `A_Percentage` VARCHAR(5) NOT NULL,
+  `Fine` INT(3) NOT NULL,
+  INDEX `attendance_detailsfk1_idx` (`Sid` ASC),
+  CONSTRAINT `attendance_detailsfk1`
+    FOREIGN KEY (`Sid`)
+    REFERENCES `project_final`.`student_details` (`Sid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+Table created.
+
+------------------------------------------------------------------
+
+CREATE TABLE `project_final`.`test_details` (
+  `Sid` VARCHAR(5) NOT NULL,
+  `Sem_no` INT NOT NULL,
+  `Paper_Name` VARCHAR(45) NOT NULL,
+  `Teacher_Name` VARCHAR(30) NOT NULL,
+  `Fm1` INT(2) NOT NULL,
+  `Om1` INT(2) NOT NULL,
+  `Fm2` INT(2) NOT NULL,
+  `Om2` INT(2) NOT NULL,
+  `Fm3` INT(2) NOT NULL,
+  `Om3` INT(2) NOT NULL,
+  `Avg` VARCHAR(5) NOT NULL,
+  INDEX `test_detailsfk1_idx` (`Sid` ASC),
+  CONSTRAINT `test_detailsfk1`
+    FOREIGN KEY (`Sid`)
+    REFERENCES `project_final`.`student_details` (`Sid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+Table created.
+
+------------------------------------------------------------------
+
+CREATE TABLE `project_final`.`assign_details` (
+  `Sid` VARCHAR(5) NOT NULL,
+  `Sem_no` INT NOT NULL,
+  `Paper_Name` VARCHAR(45) NOT NULL,
+  `Teacher_Name` VARCHAR(30) NOT NULL,
+  `Topic1` VARCHAR(30) NOT NULL,
+  `Full_m1` INT(2) NOT NULL,
+  `Obtained_m1` INT(2) NOT NULL,
+  `Topic2` VARCHAR(30) NOT NULL,
+  `Full_m2` INT(2) NOT NULL,
+  `Obtained_m2` INT(2) NOT NULL,
+  `Topic3` VARCHAR(30) NOT NULL,
+  `Full_m3` INT(2) NOT NULL,
+  `Obtained_m3` INT(2) NOT NULL,
+  `Avge` VARCHAR(5) NOT NULL,
+  INDEX `assign_detailsfk1_idx` (`Sid` ASC),
+  CONSTRAINT `assign_detailsfk1`
+    FOREIGN KEY (`Sid`)
+    REFERENCES `project_final`.`student_details` (`Sid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+Table created.
+
+------------------------------------------------------------------
+
+CREATE TABLE `project_final`.`course_exam_details` (
+  `Sid` VARCHAR(5) NOT NULL,
+  `Sem_no` INT NOT NULL,
+  `Paper_Name1` VARCHAR(45) NOT NULL,
+  `E_om1` INT(2) NOT NULL,
+  `E_om2` INT(2) NOT NULL,
+  `E_om3` INT(2) NOT NULL,
+  `E_om4` INT(2) NOT NULL,
+  `E_om5` INT(2) NOT NULL,
+  `E_Total1` INT(3) NOT NULL,
+  INDEX `course_exam_detailsfk1_idx` (`Sid` ASC),
+  CONSTRAINT `course_exam_detailsfk1`
+    FOREIGN KEY (`Sid`)
+    REFERENCES `project_final`.`student_details` (`Sid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+Table created.
+
+------------------------------------------------------------------
+
+CREATE TABLE `project_final`.`addon_exam_details` (
+  `Sid` VARCHAR(5) NOT NULL,
+  `Sem_no` INT NOT NULL,
+  `Paper_Name2` VARCHAR(45) NOT NULL,
+  `E_om6` INT(2) NOT NULL,
+  `E_om7` INT(2) NOT NULL,
+  `E_om8` INT(2) NOT NULL,
+  `E_om9` INT(2) NOT NULL,
+  `E_om10` INT(2) NOT NULL,
+  `E_Total2` INT(3) NOT NULL,
+  INDEX `addon_exam_detailsfk1_idx` (`Sid` ASC),
+  CONSTRAINT `addon_exam_detailsfk1`
+    FOREIGN KEY (`Sid`)
+    REFERENCES `project_final`.`student_details` (`Sid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+Table created.
+
+------------------------------------------------------------------
+
+CREATE TABLE `project_final`.`result_details` (
+  `Sid` VARCHAR(5) NOT NULL,
+  `Sem_no` INT NOT NULL,
+  `Course_Name` VARCHAR(30) NOT NULL,
+  `Batch_Name` VARCHAR(30) NOT NULL,
+  `Univ_Name` VARCHAR(70) NOT NULL,
+  `Grand_Total` INT(3) NOT NULL,
+  `Percentage_Marks` VARCHAR(4) NOT NULL,
+  `Exam_Remark` VARCHAR(10) NOT NULL,
+  INDEX `result_detailsfk1_idx` (`Sid` ASC),
+  CONSTRAINT `result_detailsfk1`
+    FOREIGN KEY (`Sid`)
+    REFERENCES `project_final`.`student_details` (`Sid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+Table created.
+
+------------------------------------------------------------------
+
+CREATE TABLE `project_final`.`disciplinary_details` (
+  `Sid` VARCHAR(5) NOT NULL,
+  `Sem_no` INT NOT NULL,
+  `Student_Name` VARCHAR(30) NOT NULL,
+  `Batch_Name` VARCHAR(30) NOT NULL,
+  `Course_Name` VARCHAR(30) NOT NULL,
+  `Teacher_Name` VARCHAR(30) NOT NULL,
+  `T_Remark` VARCHAR(100) NOT NULL,
+  `D_Action` VARCHAR(100) NOT NULL,
+  `D_Criteria` VARCHAR(75) NOT NULL,
+  INDEX `disciplinary_detailsfk1_idx` (`Sid` ASC),
+  CONSTRAINT `disciplinary_detailsfk1`
+    FOREIGN KEY (`Sid`)
+    REFERENCES `project_final`.`student_details` (`Sid`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE);
+Table created.
+
+------------------------------------------------------------------
